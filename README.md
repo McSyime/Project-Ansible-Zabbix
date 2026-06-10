@@ -1,5 +1,5 @@
 # Project-Ansible-Zabbix
-Dans le cadre de la leçon Netzwerkbetriebsystem, nous devons mettre en oeuvre une solution d'automatisation avec Ansible. 
+Automatisierte Einrichtung einer überwachten SSH-Infrastruktur mit Ansible und Docker
 
 ## Idee und Absicht 
 
