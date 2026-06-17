@@ -1,10 +1,10 @@
-#Zu installieren
-##Monitoringgerät
+# Zu installieren
+## Monitoringgerät
 - Ansible
 - Zabbix-server
 - Docker
 
-##Monitoredgerät
+## Monitoredgerät
 - Zabbix-agent
 - Tailscale 
 
