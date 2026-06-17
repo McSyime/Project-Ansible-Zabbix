@@ -1,0 +1,23 @@
+- name: Configuration de base des VMs Debian
+  hosts: vms
+  become: true
+
+  tasks:
+    - name: Mettre a jour le cache apt
+      apt:
+        update_cache: true
+
+    - name: Installer les paquets de base
+      apt:
+        name:
+          - curl
+          - vim
+          - htop
+          - openssh-server
+        state: present
+
+    - name: S'assurer que SSH est actif
+      service:
+        name: ssh
+        state: started
+        enabled: true
