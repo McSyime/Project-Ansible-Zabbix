@@ -10,16 +10,15 @@
 - Zabbix Server
 
 3. Auf VMs installieren :
+- Curl
 - Tailscale
-- Zabbix Agent
   
 4. Einstellungen
 
-Falls erforderlich, tauschen Sie die erforderlichen SSH-Schlüssel zwischen dem Server und den zu überwachenden Rechnern aus und testen Sie die Verbindungen.
+Transférer la clé publique du serveur sur les machines clients et effectuer la première connexion. 
 
-Starten Sie Tailscale auf allen Maschinen und integrieren Sie diese in das Tailscale-Netzwerk. 
+Faire Tailscale up sur les machines clients et mettre à jour l'inventory avec les adresses IP Tailscale (100.x.x.x). 
 
-Die Tailscale-IP-Adressen aller zu überwachenden Rechner abrufen und in eine Datei namens „inventory.ini“ eintragen. Zum Beispiel:
 
   
 
