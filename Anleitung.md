@@ -9,7 +9,7 @@
 - Ansible
 - Zabbix Server
 
-3. Auf VMs installieren :
+3. Auf VMs installieren : (script python pour automatisation)
 - Curl
 - Tailscale
   
