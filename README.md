@@ -30,9 +30,11 @@ Ensuite, il faut contrôler que les conteneurs puissent communiquer entre eux av
 ## Monitoring du serveur 
 Comme pour un client, le serveur a besoin de Zabbix-agent pour être surveillé. Pour le configurer il faut modifier le fichier `zabbix_agentd.conf` comme ceci : 
 
-`Server=100.75.102.123 
+```ini
+Server=100.75.102.123 
 ServerActive=100.75.102.123 
-Hostname=MaxPi`
+Hostname=MaxPi
+"""
 
 
 
