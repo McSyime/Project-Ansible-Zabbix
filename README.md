@@ -16,7 +16,7 @@ L'automatisation se concentre donc sur l'installation des Software nécessaires 
 
 ## Configuration Docker Compose 
 
-
+Dans le dossier, créer un fichier docker-compose.yml comme dans le Repo. Modifier les mots de passe si nécessaire.
 
 
 
