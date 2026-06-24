@@ -1,0 +1,205 @@
+---
+- name: Créer le dashboard Zabbix pour les VMs
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    zabbix_api_url: "http://100.75.102.123:8080/api_jsonrpc.php"
+    zabbix_api_token: "2f74433459ca7525230625a3980ff5bc7b94e25dab2b4752ed5db592d90e84f9"
+
+    dashboard_name: "vms"
+    inventory_group_name: "vms"
+
+    cpu_widget_fields:
+      - type: 1
+        name: "reference"
+        value: "CPU01"
+      - type: 0
+        name: "rf_rate"
+        value: 60
+      - type: 0
+        name: "ds.0.dataset_type"
+        value: 1
+      - type: 1
+        name: "ds.0.items.0"
+        value: "CPU utilization"
+      - type: 1
+        name: "ds.0.data_set_label"
+        value: "CPU"
+
+    uptime_widget_fields:
+      - type: 1
+        name: "reference"
+        value: "UPT01"
+      - type: 0
+        name: "rf_rate"
+        value: 60
+      - type: 0
+        name: "ds.0.dataset_type"
+        value: 1
+      - type: 1
+        name: "ds.0.items.0"
+        value: "System uptime"
+      - type: 1
+        name: "ds.0.data_set_label"
+        value: "Uptime"
+
+    network_widget_fields:
+      - type: 1
+        name: "reference"
+        value: "NET01"
+      - type: 0
+        name: "rf_rate"
+        value: 60
+
+      - type: 0
+        name: "ds.0.dataset_type"
+        value: 1
+      - type: 1
+        name: "ds.0.items.0"
+        value: "Interface *: Bits received"
+      - type: 1
+        name: "ds.0.data_set_label"
+        value: "Reçu"
+
+      - type: 0
+        name: "ds.1.dataset_type"
+        value: 1
+      - type: 1
+        name: "ds.1.items.0"
+        value: "Interface *: Bits sent"
+      - type: 1
+        name: "ds.1.data_set_label"
+        value: "Envoyé"
+
+  tasks:
+    - name: Vérifier que le groupe inventory existe
+      ansible.builtin.fail:
+        msg: "Le groupe '{{ inventory_group_name }}' n'existe pas dans inventory.ini"
+      when: inventory_group_name not in groups
+
+    - name: Afficher les VMs trouvées dans l'inventaire
+      ansible.builtin.debug:
+        msg: "VMs trouvées : {{ groups[inventory_group_name] }}"
+
+    - name: Rechercher si le dashboard existe déjà
+      ansible.builtin.uri:
+        url: "{{ zabbix_api_url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer {{ zabbix_api_token }}"
+        body_format: json
+        body:
+          jsonrpc: "2.0"
+          method: "dashboard.get"
+          params:
+            output:
+              - "dashboardid"
+              - "name"
+            filter:
+              name:
+                - "{{ dashboard_name }}"
+          id: 1
+        return_content: true
+      register: dashboard_get
+
+    - name: Afficher la réponse dashboard.get
+      ansible.builtin.debug:
+        var: dashboard_get.json
+
+    - name: Arrêter si l'API Zabbix retourne une erreur pendant dashboard.get
+      ansible.builtin.fail:
+        msg: "Erreur API Zabbix pendant dashboard.get : {{ dashboard_get.json.error }}"
+      when: dashboard_get.json.error is defined
+
+    - name: Définir l'ID du dashboard existant
+      ansible.builtin.set_fact:
+        existing_dashboard_id: "{{ dashboard_get.json.result[0].dashboardid }}"
+      when:
+        - dashboard_get.json.result is defined
+        - dashboard_get.json.result | length > 0
+
+    - name: Supprimer l'ancien dashboard s'il existe
+      ansible.builtin.uri:
+        url: "{{ zabbix_api_url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer {{ zabbix_api_token }}"
+        body_format: json
+        body:
+          jsonrpc: "2.0"
+          method: "dashboard.delete"
+          params:
+            - "{{ existing_dashboard_id }}"
+          id: 2
+        return_content: true
+      register: dashboard_delete
+      when: existing_dashboard_id is defined
+
+    - name: Afficher la réponse dashboard.delete
+      ansible.builtin.debug:
+        var: dashboard_delete.json
+      when: existing_dashboard_id is defined
+
+    - name: Arrêter si l'API Zabbix retourne une erreur pendant dashboard.delete
+      ansible.builtin.fail:
+        msg: "Erreur API Zabbix pendant dashboard.delete : {{ dashboard_delete.json.error }}"
+      when:
+        - existing_dashboard_id is defined
+        - dashboard_delete.json.error is defined
+
+    - name: Créer le dashboard vms
+      ansible.builtin.uri:
+        url: "{{ zabbix_api_url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer {{ zabbix_api_token }}"
+        body_format: json
+        body:
+          jsonrpc: "2.0"
+          method: "dashboard.create"
+          params:
+            name: "{{ dashboard_name }}"
+            display_period: 30
+            auto_start: 1
+            pages:
+              - name: "Vue générale VMs"
+                widgets:
+                  - type: "svggraph"
+                    name: "Utilisation CPU"
+                    x: 0
+                    y: 0
+                    width: 24
+                    height: 6
+                    fields: "{{ cpu_widget_fields }}"
+
+                  - type: "svggraph"
+                    name: "Temps de fonctionnement"
+                    x: 24
+                    y: 0
+                    width: 24
+                    height: 6
+                    fields: "{{ uptime_widget_fields }}"
+
+                  - type: "svggraph"
+                    name: "Trafic réseau"
+                    x: 0
+                    y: 6
+                    width: 48
+                    height: 8
+                    fields: "{{ network_widget_fields }}"
+          id: 3
+        return_content: true
+      register: dashboard_create
+
+    - name: Afficher la réponse dashboard.create
+      ansible.builtin.debug:
+        var: dashboard_create.json
+
+    - name: Arrêter si l'API Zabbix retourne une erreur pendant dashboard.create
+      ansible.builtin.fail:
+        msg: "Erreur API Zabbix pendant dashboard.create : {{ dashboard_create.json.error }}"
+      when: dashboard_create.json.error is defined
