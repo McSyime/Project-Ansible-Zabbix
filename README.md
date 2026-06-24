@@ -21,22 +21,22 @@ Lancer le service puis se connecter avec ses identifiants. Afin de rester cohér
 
 ## Configuration Docker Compose 
 
-Dans le dossier, créer un fichier docker-compose.yml comme dans le Repo. Modifier les mots de passe si nécessaire. Ensuite, démarrer les conteneurs avec 'sudo docker compose up -d' puis contrôler le statut avec 'sudo docker ps'.
+Dans le dossier, créer un fichier `docker-compose.yml` comme dans le Repo. Modifier les mots de passe si nécessaire. Ensuite, démarrer les conteneurs avec `sudo docker compose up -d` puis contrôler le statut avec `sudo docker ps`.
 
 Ensuite, il faut contrôler que les conteneurs puissent communiquer entre eux avec cette commande 'sudo docker network ls'. Le résultat attendu doit ressembler à ça : 
 
-'NETWORK ID     NAME                    DRIVER    SCOPE
+`NETWORK ID     NAME                    DRIVER    SCOPE
 335d65726c92   bridge                  bridge    local
 bd74d6bbf446   host                    host      local
 0136323de94e   none                    null      local
-9ef1f4c1673b   zabbix-docker_default   bridge    local'
+9ef1f4c1673b   zabbix-docker_default   bridge    local`
 
 ## Monitoring du serveur 
-Comme pour un client, le serveur a besoin de Zabbix-agent pour être surveillé. Pour le configurer il faut modifier le fichier 'zabbix_agentd.conf' comme ceci : 
+Comme pour un client, le serveur a besoin de Zabbix-agent pour être surveillé. Pour le configurer il faut modifier le fichier `zabbix_agentd.conf` comme ceci : 
 
-'Server=100.75.102.123 
+`Server=100.75.102.123 
 ServerActive=100.75.102.123 
-Hostname=MaxPi'
+Hostname=MaxPi`
 
 
 
