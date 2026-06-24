@@ -5,7 +5,7 @@
 
   vars:
     zabbix_api_url: "http://100.75.102.123:8080/api_jsonrpc.php"
-    zabbix_api_token: "2f74433459ca7525230625a3980ff5bc7b94e25dab2b4752ed5db592d90e84f9"
+    zabbix_api_token: "YOUR_TOKEN"
 
     dashboard_name: "vms"
     inventory_group_name: "vms"
