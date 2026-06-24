@@ -25,11 +25,7 @@ Dans le dossier, créer un fichier `docker-compose.yml` comme dans le Repo. Modi
 
 Ensuite, il faut contrôler que les conteneurs puissent communiquer entre eux avec cette commande 'sudo docker network ls'. Le résultat attendu doit ressembler à ça : 
 
-`NETWORK ID     NAME                    DRIVER    SCOPE
-335d65726c92   bridge                  bridge    local
-bd74d6bbf446   host                    host      local
-0136323de94e   none                    null      local
-9ef1f4c1673b   zabbix-docker_default   bridge    local`
+<img width="954" height="170" alt="image" src="https://github.com/user-attachments/assets/7477cbca-76e4-4c09-bb24-f3e45e6a8dea" />
 
 ## Monitoring du serveur 
 Comme pour un client, le serveur a besoin de Zabbix-agent pour être surveillé. Pour le configurer il faut modifier le fichier `zabbix_agentd.conf` comme ceci : 
