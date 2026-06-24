@@ -72,10 +72,16 @@ vm2 | SUCCESS => {
 }
 ```
 # Automatisations
-##Automatisation des dépendances
+## Automatisation des dépendances
 La configuration de base est achevée et nous sommes dans le coeur du sujet. Comme automatisation, je propose d'automatiser l'installation de zabbix-agent sur les clients et de modifier le fichier `zabbix_agentd.conf` automatiquement par rapport à l'adresse IP du serveur. Voir le fichier ```setup-vms.yml``` du repo. 
-##Automatisation des Hosts dans Zabbix WebGUI
-Afin d'automatiser l'ajout de client dans l'interface Zabbix, nous avons besoin de générer un Token pour notre playbook. 
+
+## Automatisation des Hosts dans Zabbix WebGUI
+Afin d'automatiser l'ajout de client dans l'interface Zabbix, nous avons besoin de générer un Token pour notre playbook. Il suffit d'aller dans le WebGUI et dans Users, API Token et de le générer pour l'utilisateur admin. 
+
+Ensuite, prendre le Playbook du repo ```add_hosts_to_zabbix.yml``` et insérer le Token et le nom des groupes selon le fichier ```inventory.ini```
+
+Une fois le playbook lancé, les clients se retrouvent dans Data Collection du WebGUI de Zabbix. 
+
 
 
 
