@@ -1,3 +1,4 @@
+---
 - name: Installation automatique des clients Debian
   hosts: HOSTNAME
   become: true
