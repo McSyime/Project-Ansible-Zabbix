@@ -31,10 +31,51 @@ Ensuite, il faut contrôler que les conteneurs puissent communiquer entre eux av
 Comme pour un client, le serveur a besoin de Zabbix-agent pour être surveillé. Pour le configurer il faut modifier le fichier `zabbix_agentd.conf` comme ceci : 
 
 ```ini
-Server=100.75.102.123 
-ServerActive=100.75.102.123 
-Hostname=MaxPi
-"""
+Server=IP_TAILSCALE_SERVER_ZABBIX
+ServerActive=IP_TAILSCALE_SERVER_ZABBIX
+Hostname=HOSTNAME_SERVER
+```
+
+# Configuration des clients 
+Ici, nous disposons de 3 VMs avec vagrant. Elles jouent le rôle des "nouvelles machines de mon parc". Avant de pouvoir passer aux étapes d'automatisations avec Ansible, il est nécessaire de transférer la clé ssh publique du serveur sur les clients et d'installer et configurer tailscale. 
+
+Avant de pouvoir lancer un playbook, il est nécessaire d'effectuer une première connexion ssh du serveur au client. Exemple : `ssh vagrant@100.113.32.65`
+
+## Modifier l'inventaire 
+Sur le serveur Ansible, modifier le fichier ```inventory.ini``` comme dans le repo avec les noms de groupe, les adresses IP et noms de Hosts correspondants. Les adresses IP doivent être celles du réseaux Tailscale. Voir exemple dans le repo. 
+
+Une fois que le fichier est modifié, testé avec `ansible all -i inventory.ini -m ping`. Le résultat attendu ressemble a cela : 
+```
+[WARNING]: Host 'vm1' is using the discovered Python interpreter at '/usr/bin/python3.11', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.19/reference_appendices/interpreter_discovery.html for more information.
+vm1 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.11"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+[WARNING]: Host 'vm3' is using the discovered Python interpreter at '/usr/bin/python3.11', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.19/reference_appendices/interpreter_discovery.html for more information.
+vm3 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.11"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+[WARNING]: Host 'vm2' is using the discovered Python interpreter at '/usr/bin/python3.11', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.19/reference_appendices/interpreter_discovery.html for more information.
+vm2 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.11"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+```
+# Automatisations
+##Automatisation des dépendances
+La configuration de base est achevée et nous sommes dans le coeur du sujet. Comme automatisation, je propose d'automatiser l'installation de zabbix-agent sur les clients et de modifier le fichier `zabbix_agentd.conf` automatiquement par rapport à l'adresse IP du serveur. Voir le fichier ```setup-vms.yml``` du repo. 
+##Automatisation des Hosts dans Zabbix WebGUI
+Afin d'automatiser l'ajout de client dans l'interface Zabbix, nous avons besoin de générer un Token pour notre playbook. 
 
 
 
