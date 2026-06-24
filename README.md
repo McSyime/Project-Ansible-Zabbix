@@ -15,7 +15,7 @@ L'automatisation se concentre donc sur l'installation des Software nécessaires 
 - Zabbix agent
 - Ansible
 
-##Configuration tailscale 
+## Configuration tailscale 
 
 Lancer le service puis se connecter avec ses identifiants. Afin de rester cohérent, seuls les adresses IP Tailscale seront utilisées pour les différentes configs.
 
@@ -80,7 +80,10 @@ Afin d'automatiser l'ajout de client dans l'interface Zabbix, nous avons besoin 
 
 Ensuite, prendre le Playbook du repo ```add_hosts_to_zabbix.yml``` et insérer le Token et le nom des groupes selon le fichier ```inventory.ini```
 
-Une fois le playbook lancé, les clients se retrouvent dans Data Collection du WebGUI de Zabbix. 
+Une fois le playbook lancé, les clients se retrouvent dans Data Collection du WebGUI de Zabbix automatiquement avec les bons attributs. 
+
+## Automatisation du Dashboard 
+Pour intégrer les vms à une Dashboard prédéfinie, voir le Playbook ```create_dashboard_vms.yml```. A savoir que si nous modifions le Dashboard et que nous exécutons le playbook pour intégrer une autre VM, la Dashboard va se réinitialiser. 
 
 
 
