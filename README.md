@@ -81,7 +81,7 @@ Ensuite, prendre le Playbook du repo ```add_hosts_to_zabbix.yml``` et insérer l
 Une fois le playbook lancé avec `ansible-playbook -i inventory.ini add_hosts_to_zabbix.yml`, les clients se retrouvent dans Data Collection du WebGUI de Zabbix automatiquement avec les bons attributs. 
 
 ## Automatisation du Dashboard 
-Pour intégrer les vms à une Dashboard prédéfinie, voir le Playbook ```create_dashboard_vms.yml```. A savoir que si nous modifions le Dashboard et que nous exécutons le playbook pour intégrer une autre VM, la Dashboard va se réinitialiser. 
+Pour intégrer les vms à une Dashboard prédéfinie, exécuter le Playbook ```create_dashboard_vms.yml``` avec `ansible-playbook -i inventory.ini create_dashboard_vms.yml`. A savoir que si nous modifions le Dashboard et que nous exécutons le playbook pour intégrer une autre VM, la Dashboard va se réinitialiser. 
 
 
 
