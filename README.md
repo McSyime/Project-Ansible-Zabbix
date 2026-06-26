@@ -1,5 +1,6 @@
 # Projekt-Ansible-Zabbix
 Automatisierte Einrichtung einer überwachten SSH-Infrastruktur mit Ansible und Docker
+<img width="1672" height="941" alt="Netwerk Schema" src="https://github.com/user-attachments/assets/5fb7b233-f41f-484b-80b7-b49549c63eb8" />
 
 ## Ausgangslage
 
