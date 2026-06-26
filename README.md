@@ -23,7 +23,7 @@ Lancer le service puis se connecter avec ses identifiants. Afin de rester cohér
 
 Dans le dossier, créer un fichier `docker-compose.yml` comme dans le Repo. Modifier les mots de passe si nécessaire. Ensuite, démarrer les conteneurs avec `sudo docker compose up -d` puis contrôler le statut avec `sudo docker ps`.
 
-Ensuite, il faut contrôler que les conteneurs puissent communiquer entre eux avec cette commande 'sudo docker network ls'. Le résultat attendu doit ressembler à ça : 
+Ensuite, il faut contrôler que les conteneurs puissent communiquer entre eux avec cette commande `sudo docker network ls`. Le résultat attendu doit ressembler à ça : 
 
 <img width="954" height="170" alt="image" src="https://github.com/user-attachments/assets/7477cbca-76e4-4c09-bb24-f3e45e6a8dea" />
 
