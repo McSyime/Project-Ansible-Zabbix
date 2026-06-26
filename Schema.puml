@@ -1,0 +1,33 @@
+@startuml
+skinparam componentStyle rectangle
+
+cloud "Tailscale Netzwerk" {
+  node "Raspberry Pi\nMaxPi" {
+    component "Ansible\nController" as ansible
+    component "Zabbix Server\nWeb UI" as zabbix
+    database "MariaDB" as db
+  }
+
+  node "VM1 Debian" {
+    component "Zabbix Agent" as agent1
+  }
+
+  node "VM2 Debian" {
+    component "Zabbix Agent" as agent2
+  }
+
+  node "VM3 Debian" {
+    component "Zabbix Agent" as agent3
+  }
+}
+
+ansible --> agent1 : SSH
+ansible --> agent2 : SSH
+ansible --> agent3 : SSH
+
+agent1 --> zabbix : Monitoring Data
+agent2 --> zabbix : Monitoring Data
+agent3 --> zabbix : Monitoring Data
+
+zabbix --> db : stockage
+@enduml
