@@ -71,14 +71,14 @@ vm2 | SUCCESS => {
 ```
 # Automatisations
 ## Automatisation des dépendances
-La configuration de base est achevée et nous sommes dans le coeur du sujet. Comme automatisation, je propose d'automatiser l'installation de zabbix-agent sur les clients et de modifier le fichier `zabbix_agentd.conf` automatiquement par rapport à l'adresse IP du serveur. Voir le fichier ```setup-vms.yml``` du repo. 
+La configuration de base est achevée et nous sommes dans le coeur du sujet. Comme automatisation, je propose d'automatiser l'installation de zabbix-agent sur les clients et de modifier le fichier `zabbix_agentd.conf` automatiquement par rapport à l'adresse IP du serveur. Voir le fichier ```setup-vms.yml``` du repo et le lancer avec `ansible-playbook -i inventory.ini setup-vms.yml`
 
 ## Automatisation des Hosts dans Zabbix WebGUI
 Afin d'automatiser l'ajout de client dans l'interface Zabbix, nous avons besoin de générer un Token pour notre playbook. Il suffit d'aller dans le WebGUI et dans Users, API Token et de le générer pour l'utilisateur admin. 
 
 Ensuite, prendre le Playbook du repo ```add_hosts_to_zabbix.yml``` et insérer le Token et le nom des groupes selon le fichier ```inventory.ini```
 
-Une fois le playbook lancé, les clients se retrouvent dans Data Collection du WebGUI de Zabbix automatiquement avec les bons attributs. 
+Une fois le playbook lancé avec `ansible-playbook -i inventory.ini add_hosts_to_zabbix.yml`, les clients se retrouvent dans Data Collection du WebGUI de Zabbix automatiquement avec les bons attributs. 
 
 ## Automatisation du Dashboard 
 Pour intégrer les vms à une Dashboard prédéfinie, voir le Playbook ```create_dashboard_vms.yml```. A savoir que si nous modifions le Dashboard et que nous exécutons le playbook pour intégrer une autre VM, la Dashboard va se réinitialiser. 
