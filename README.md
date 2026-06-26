@@ -1,34 +1,34 @@
-# Project-Ansible-Zabbix
+# Projekt-Ansible-Zabbix
 Automatisierte Einrichtung einer überwachten SSH-Infrastruktur mit Ansible und Docker
 
-## Situation de départ 
+## Ausgangslage
 
-Comme nous créons beaucoup de VMs et que je commence à monter un HomeLab chez moi, je souhaite automatiser le contrôle de ces dernières avec des agents Zabbix. Le serveur Zabbix se trouve sur un Raspberry Pi 5 et dispose d'un webGUI et d'une DB MariaDB pour stocker les informations des tasks par exemple. 
+Da wir viele VMs erstellen und ich zuhause langsam ein eigenes HomeLab aufbaue, möchte ich die Überwachung dieser Maschinen mit Zabbix-Agents automatisieren. Der Zabbix-Server befindet sich auf einem separaten Server.
 
-L'automatisation se concentre donc sur l'installation des Software nécessaires pour les contrôle des machines (virtuelles ou non) de mon réseau. Concernant le server, il sera installé dans un conteneur Docker Compose car il nécessite d'avoir une DB, le server Zabbix et Zabbix webGUI pour la configuration de la surveillance des machines. 
+Die Automatisierung konzentriert sich also auf die Installation der nötigen Software, um die Maschinen in meinem Netzwerk zu überwachen – egal ob virtuell oder physisch. Der Server selbst wird ebenfalls in das Monitoring eingebunden.
 
-# Configuration du serveur 
-## A installer : 
+# Serverkonfiguration
+## Zu installieren:
 - Tailscale
 - Docker
-- Zabbix-server
-- Zabbix agent
+- Zabbix-Server
+- Zabbix-Agent
 - Ansible
 
-## Configuration tailscale 
+## Tailscale-Konfiguration
 
-Lancer le service puis se connecter avec ses identifiants. Afin de rester cohérent, seuls les adresses IP Tailscale seront utilisées pour les différentes configs.
+Den Dienst starten und sich mit den eigenen Zugangsdaten verbinden. Um konsistent zu bleiben, werden für alle Konfigurationen nur die Tailscale-IP-Adressen verwendet.
 
-## Configuration Docker Compose 
+## Docker-Compose-Konfiguration
 
-Dans le dossier, créer un fichier `docker-compose.yml` comme dans le Repo. Modifier les mots de passe si nécessaire. Ensuite, démarrer les conteneurs avec `sudo docker compose up -d` puis contrôler le statut avec `sudo docker ps`.
+Im entsprechenden Verzeichnis eine Datei `docker-compose.yml` gemäss dem Repo erstellen. Falls nötig die Passwörter anpassen. Danach die Container mit `sudo docker compose up -d` starten und anschliessend prüfen, ob alles korrekt läuft.
 
-Ensuite, il faut contrôler que les conteneurs puissent communiquer entre eux avec cette commande `sudo docker network ls`. Le résultat attendu doit ressembler à ça : 
+Danach kontrollieren, ob die Container miteinander kommunizieren können, mit dem Befehl `sudo docker network ls`. Das erwartete Ergebnis sollte ungefähr so aussehen:
 
 <img width="954" height="170" alt="image" src="https://github.com/user-attachments/assets/7477cbca-76e4-4c09-bb24-f3e45e6a8dea" />
 
-## Monitoring du serveur 
-Comme pour un client, le serveur a besoin de Zabbix-agent pour être surveillé. Pour le configurer il faut modifier le fichier `zabbix_agentd.conf` comme ceci : 
+## Monitoring des Servers
+Wie bei einem Client braucht auch der Server den Zabbix-Agenten, um überwacht zu werden. Dafür muss die Datei `zabbix_agentd.conf` wie folgt angepasst werden:
 
 ```ini
 Server=IP_TAILSCALE_SERVER_ZABBIX
@@ -36,15 +36,16 @@ ServerActive=IP_TAILSCALE_SERVER_ZABBIX
 Hostname=HOSTNAME_SERVER
 ```
 
-# Configuration des clients 
-Dans le VagrantFile, l'installation de tailscale et la clé ssh publique du serveur Ansible et Zabbix est déjà introduite. Il suffit donc de faire `tailscale up` et d'ajouter les machines dans notre réseau tailscale. Ensuite. effectuer une première connexion du serveur aux machines clients pour que le serveur soit reconnu par les clients lors des automatisations avec ansible.
+# Konfiguration der Clients
+Auf dem Ansible-Server sind die Installation von Tailscale und der öffentliche SSH-Key des Ansible- und Zabbix-Servers bereits hinterlegt. Es reicht also, `tailscale up` auszuführen und die Maschinen zu unserem Netzwerk hinzuzufügen.
 
-## Modifier l'inventaire 
-Sur le serveur Ansible, modifier le fichier ```inventory.ini``` comme dans le repo avec les noms de groupe, les adresses IP et noms de Hosts correspondants. Les adresses IP doivent être celles du réseaux Tailscale. Voir exemple dans le repo. 
+## Inventar anpassen
+Auf dem Ansible-Server die Datei `inventory.ini` so anpassen wie im Repo beschrieben, also mit den Gruppennamen, den IP-Adressen und den passenden Hostnamen. Die IP-Adressen müssen jene des Tailscale-Netzwerks sein.
 
-Une fois que le fichier est modifié, testé avec `ansible all -i inventory.ini -m ping`. Le résultat attendu ressemble a cela : 
+Sobald die Datei angepasst ist, mit `ansible all -i inventory.ini -m ping` testen. Das erwartete Ergebnis sieht ungefähr so aus:
+
 ```
-[WARNING]: Host 'vm1' is using the discovered Python interpreter at '/usr/bin/python3.11', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.19/reference_appendices/interpreter_discovery.html for more information.
+[WARNING]: Host 'vm1' is using the discovered Python interpreter at '/usr/bin/python3.11', but future installation of another Python interpreter could cause a different interpreter to be discovered. S[...]
 vm1 | SUCCESS => {
     "ansible_facts": {
         "discovered_interpreter_python": "/usr/bin/python3.11"
@@ -52,7 +53,7 @@ vm1 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-[WARNING]: Host 'vm3' is using the discovered Python interpreter at '/usr/bin/python3.11', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.19/reference_appendices/interpreter_discovery.html for more information.
+[WARNING]: Host 'vm3' is using the discovered Python interpreter at '/usr/bin/python3.11', but future installation of another Python interpreter could cause a different interpreter to be discovered. S[...]
 vm3 | SUCCESS => {
     "ansible_facts": {
         "discovered_interpreter_python": "/usr/bin/python3.11"
@@ -60,7 +61,7 @@ vm3 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-[WARNING]: Host 'vm2' is using the discovered Python interpreter at '/usr/bin/python3.11', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.19/reference_appendices/interpreter_discovery.html for more information.
+[WARNING]: Host 'vm2' is using the discovered Python interpreter at '/usr/bin/python3.11', but future installation of another Python interpreter could cause a different interpreter to be discovered. S[...]
 vm2 | SUCCESS => {
     "ansible_facts": {
         "discovered_interpreter_python": "/usr/bin/python3.11"
@@ -69,19 +70,21 @@ vm2 | SUCCESS => {
     "ping": "pong"
 }
 ```
-# Automatisations
-## Automatisation des dépendances
-La configuration de base est achevée et nous sommes dans le coeur du sujet. Comme automatisation, je propose d'automatiser l'installation de zabbix-agent sur les clients et de modifier le fichier `zabbix_agentd.conf` automatiquement par rapport à l'adresse IP du serveur. Voir le fichier ```setup-vms.yml``` du repo et le lancer avec `ansible-playbook -i inventory.ini setup-vms.yml`
 
-## Automatisation des Hosts dans Zabbix WebGUI
-Afin d'automatiser l'ajout de client dans l'interface Zabbix, nous avons besoin de générer un Token pour notre playbook. Il suffit d'aller dans le WebGUI et dans Users, API Token et de le générer pour l'utilisateur admin. 
+# Automatisierungen
+## Automatisierung der Abhängigkeiten
+Die Grundkonfiguration ist abgeschlossen, und wir sind nun beim Kern des Projekts angekommen. Als erste Automatisierung schlage ich vor, die Installation von `zabbix-agent` auf den Clients zu automatisieren und die Datei `za[...]
 
-Ensuite, prendre le Playbook du repo ```add_hosts_to_zabbix.yml``` et insérer le Token et le nom des groupes selon le fichier ```inventory.ini```
+## Automatisierung der Hosts in der Zabbix-WebGUI
+Um das Hinzufügen von Clients in der Zabbix-Oberfläche zu automatisieren, benötigen wir für unser Playbook ein Token. Dazu im WebGUI unter Users > API Token ein Token generieren und dieses anschliessend verwenden.
 
-Une fois le playbook lancé avec `ansible-playbook -i inventory.ini add_hosts_to_zabbix.yml`, les clients se retrouvent dans Data Collection du WebGUI de Zabbix automatiquement avec les bons attributs. 
+Danach das Playbook aus dem Repo `add_hosts_to_zabbix.yml` nehmen und das Token sowie die Gruppennamen gemäss der Datei `inventory.ini` eintragen.
 
-## Automatisation du Dashboard 
-Pour intégrer les vms à une Dashboard prédéfinie, exécuter le Playbook ```create_dashboard_vms.yml``` avec `ansible-playbook -i inventory.ini create_dashboard_vms.yml`. A savoir que si nous modifions le Dashboard et que nous exécutons le playbook pour intégrer une autre VM, la Dashboard va se réinitialiser. 
+Sobald das Playbook mit `ansible-playbook -i inventory.ini add_hosts_to_zabbix.yml` ausgeführt wurde, erscheinen die Clients in der Data Collection der Zabbix-WebGUI automatisch mit den richtigen Attributen.
+
+## Automatisierung des Dashboards
+Um die VMs in ein vordefiniertes Dashboard zu integrieren, das Playbook `create_dashboard_vms.yml` mit `ansible-playbook -i inventory.ini create_dashboard_vms.yml` ausführen. Falls wir etwas ändern[...]
+
 
 
 
