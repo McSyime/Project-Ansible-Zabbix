@@ -41,6 +41,8 @@ Ici, nous disposons de 3 VMs avec vagrant. Elles jouent le rôle des "nouvelles 
 
 Les 3 machines sont disponibles dans le repo et sont piloter avec Virtual Box via Vagrant pour simplifier le déploiement. 
 
+Comme les machines ne peuvent pas encore être automatisée, il faut installer tailscale manuellement avec `curl -fsSL https://tailscale.com/install.sh | sh` puis faire `tailscale up` pour ajouter les machines dans notre console admin de Tailscale.
+
 ## Modifier l'inventaire 
 Sur le serveur Ansible, modifier le fichier ```inventory.ini``` comme dans le repo avec les noms de groupe, les adresses IP et noms de Hosts correspondants. Les adresses IP doivent être celles du réseaux Tailscale. Voir exemple dans le repo. 
 
