@@ -37,11 +37,7 @@ Hostname=HOSTNAME_SERVER
 ```
 
 # Configuration des clients 
-Ici, nous disposons de 3 VMs avec vagrant. Elles jouent le rôle des "nouvelles machines de mon parc". Avant de pouvoir passer aux étapes d'automatisations avec Ansible, il est nécessaire de transférer la clé ssh publique du serveur sur les clients et d'installer et configurer tailscale. Il faut également effectuer une première connexion ssh du serveur au client. Exemple : `ssh vagrant@100.113.32.65`. 
-
-Les 3 machines sont disponibles dans le repo et sont piloter avec Virtual Box via Vagrant pour simplifier le déploiement. 
-
-Comme les machines ne peuvent pas encore être automatisée, il faut installer tailscale manuellement avec `curl -fsSL https://tailscale.com/install.sh | sh` puis faire `tailscale up` pour ajouter les machines dans notre console admin de Tailscale.
+Dans le VagrantFile, l'installation de tailscale et la clé ssh publique du serveur Ansible et Zabbix est déjà introduite. Il suffit donc de faire `tailscale up` et d'ajouter les machines dans notre réseau tailscale. Ensuite. effectuer une première connexion du serveur aux machines clients pour que le serveur soit reconnu par les clients lors des automatisations avec ansible.
 
 ## Modifier l'inventaire 
 Sur le serveur Ansible, modifier le fichier ```inventory.ini``` comme dans le repo avec les noms de groupe, les adresses IP et noms de Hosts correspondants. Les adresses IP doivent être celles du réseaux Tailscale. Voir exemple dans le repo. 
